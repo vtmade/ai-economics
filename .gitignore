@@ -33,7 +33,6 @@ env/
 outputs/data/*.csv
 outputs/figures/*.png
 outputs/figures/*.pdf
-outputs/reports/*.html
 outputs/reports/*.md
 
 # Keep directory structure

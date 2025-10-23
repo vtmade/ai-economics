@@ -148,7 +148,7 @@ If you use this simulator in research or teaching, please cite:
 ```bibtex
 @software{ai_labor_market_sim,
   title = {AI Labor Market Economics Simulator},
-  author = {Your Name},
+  author = {Vinay Thakur},
   year = {2025},
   url = {https://github.com/yourusername/ai-economics}
 }
