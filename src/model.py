@@ -11,8 +11,31 @@ Integrates all components:
 
 import numpy as np
 from mesa import Model
-from mesa.time import RandomActivation
-from mesa.datacollection import DataCollector
+try:
+    from mesa.time import RandomActivation
+except ImportError:
+    # Mesa 3.x has different API
+    class RandomActivation:
+        def __init__(self, model):
+            self.model = model
+            self.agents = []
+            self.steps = 0
+
+        def add(self, agent):
+            self.agents.append(agent)
+
+        def step(self):
+            import random
+            agents_shuffled = self.agents.copy()
+            random.shuffle(agents_shuffled)
+            for agent in agents_shuffled:
+                agent.step()
+            self.steps += 1
+
+try:
+    from mesa.datacollection import DataCollector
+except ImportError:
+    from mesa import DataCollector
 
 from src.agents.worker import Worker
 from src.agents.firm import Firm
@@ -44,6 +67,9 @@ class LaborMarketModel(Model):
             custom_config: Custom configuration overrides
         """
         super().__init__()
+
+        # Add next_id for agent creation (Mesa 3.x compatibility)
+        self._agent_id = 0
 
         self.scenario_name = scenario_name
         self.num_workers = num_workers or config.DEFAULT_NUM_WORKERS
@@ -108,6 +134,11 @@ class LaborMarketModel(Model):
         )
 
         self.running = True
+
+    def next_id(self):
+        """Generate next unique agent ID."""
+        self._agent_id += 1
+        return self._agent_id
 
     def _apply_custom_config(self, custom_config):
         """Apply custom configuration parameters."""

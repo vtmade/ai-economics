@@ -40,7 +40,8 @@ class Firm(Agent):
             initial_capital: Initial capital stock
             config: Configuration dictionary
         """
-        super().__init__(unique_id, model)
+        super().__init__(model)
+        self.unique_id = unique_id
 
         # Production attributes
         self.capital = initial_capital

@@ -1,6 +1,6 @@
 # AI Labor Market Economics Simulator
 
-An educational agent-based model for understanding AI's impact on labor markets, with comprehensive tutorials, scenarios, and automated reporting.
+An agent-based computational model for simulating and analyzing AI's impact on labor markets, with comprehensive tutorials, scenarios, and automated reporting.
 
 ## Overview
 
@@ -10,7 +10,7 @@ This simulation models the economic effects of AI adoption on labor markets, fea
 - Multiple comparison scenarios
 - Publication-quality visualizations
 - Automated comprehensive reports
-- Interactive educational tutorials
+- Interactive analysis notebooks
 
 ## Key Features
 
@@ -85,8 +85,8 @@ ai-economics/
 
 - [Methodology Guide](docs/methodology.md): Detailed explanation of all model assumptions
 - [Economic Glossary](docs/glossary.md): Definitions of economic terms
-- [Study Guide](docs/study_guide.md): Guided experiments and exercises
-- [API Reference](docs/api_reference.md): Code documentation
+- [Research Guide](docs/research_guide.md): Experimental design and analysis methods
+- [Quick Start](QUICKSTART.md): Get running in 5 minutes
 
 ## Usage Examples
 

@@ -33,7 +33,8 @@ class Government(Agent):
             model: Mesa model instance
             config: Configuration dictionary with policy parameters
         """
-        super().__init__(unique_id, model)
+        super().__init__(model)
+        self.unique_id = unique_id
 
         self.config = config
 

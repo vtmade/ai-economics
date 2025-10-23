@@ -45,7 +45,8 @@ class Worker(Agent):
             initial_savings: Initial savings amount
             config: Configuration dictionary with worker parameters
         """
-        super().__init__(unique_id, model)
+        super().__init__(model)
+        self.unique_id = unique_id
 
         # Skill attributes
         self.skill_level = skill_level

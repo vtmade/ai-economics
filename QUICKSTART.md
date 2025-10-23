@@ -1,6 +1,6 @@
 # Quick Start Guide
 
-Get up and running with the AI Labor Market Simulation in 5 minutes!
+Get the AI Labor Market Simulation running in 5 minutes.
 
 ## Installation
 
@@ -65,9 +65,9 @@ This runs all scenarios, creates visualizations, and generates a comprehensive r
 - Compare to low adoption to see policy effectiveness
 - Shows how government programs can mitigate disruption
 
-## Interactive Tutorial
+## Interactive Analysis
 
-For hands-on learning with explanations:
+For step-by-step simulation walkthrough:
 
 ```bash
 jupyter notebook notebooks/tutorial.ipynb
@@ -95,14 +95,14 @@ print(f"Unemployment: {results['summary']['avg_unemployment_rate']:.2%}")
 print(f"Inequality: {results['summary']['final_gini']:.3f}")
 ```
 
-### Teaching: Demonstrate Economic Concepts
+### Economic Analysis: Explore Market Dynamics
 
-Show students how:
-- Technology can be skill-biased
-- Labor market frictions affect adjustment
-- Policies can influence outcomes
+Investigate how:
+- Technology exhibits skill-biased characteristics
+- Labor market frictions affect adjustment speeds
+- Policy interventions influence equilibrium outcomes
 
-Run comparison, show visualizations, discuss results.
+Run comparisons, analyze visualizations, interpret results.
 
 ### Policy Analysis: Evaluate Interventions
 
