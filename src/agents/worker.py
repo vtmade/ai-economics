@@ -66,7 +66,7 @@ class Worker(Agent):
         self.income = 0
 
         # Job search attributes
-        self.reservation_wage = initial_skill * config.get('reservation_wage_factor', 0.7) * 1000
+        self.reservation_wage = initial_skill * config.get('reservation_wage_factor', 0.5) * 500
         self.job_offers = []
 
         # Task composition (for AI impact analysis)

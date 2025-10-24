@@ -23,11 +23,11 @@ WORKER_CONFIG = {
         'medium': 0.6,
         'high': 0.9
     },
-    'initial_savings_mean': 5000,
-    'initial_savings_std': 2000,
-    'consumption_propensity': 0.8,  # Fraction of income consumed
-    'reservation_wage_factor': 0.7,  # Minimum acceptable wage as fraction of previous wage
-    'job_search_cost': 50,           # Cost per period of job searching
+    'initial_savings_mean': 10000,
+    'initial_savings_std': 3000,
+    'consumption_propensity': 0.75,  # Fraction of income consumed (reduced to avoid debt spiral)
+    'reservation_wage_factor': 0.5,  # Minimum acceptable wage (more flexible)
+    'job_search_cost': 20,           # Cost per period of job searching (reduced)
     'learning_rate': 0.01,           # Skill improvement rate when employed
     'skill_depreciation': 0.005      # Skill decay rate when unemployed
 }
@@ -68,6 +68,22 @@ AI_CONFIG = {
         'augmentation_intensity': 0.4,  # High augmentation effect
         'adoption_cost': 30000,         # Lower fixed cost
         'operating_cost_reduction': 0.25 # 25% reduction in labor costs
+    },
+    'extreme_displacement': {
+        'adoption_rate': 0.95,          # 95% of firms adopt (near universal)
+        'diffusion_speed': 0.15,        # Very fast diffusion
+        'automation_intensity': 0.85,   # Extreme automation - 85% of routine tasks
+        'augmentation_intensity': 0.6,  # High augmentation for survivors
+        'adoption_cost': 10000,         # Very low cost (AI commoditized)
+        'operating_cost_reduction': 0.65 # 65% reduction in labor costs
+    },
+    'technological_singularity': {
+        'adoption_rate': 0.98,          # Near-universal adoption
+        'diffusion_speed': 0.20,        # Explosive diffusion
+        'automation_intensity': 0.95,   # 95% of jobs automated
+        'augmentation_intensity': 0.8,  # Massive augmentation for elite
+        'adoption_cost': 5000,          # Trivial cost
+        'operating_cost_reduction': 0.80 # 80% reduction in labor needs
     }
 }
 
@@ -95,10 +111,10 @@ TASK_CONFIG = {
         }
     },
     'automation_susceptibility': {
-        'routine_manual': 0.8,          # Highly automatable
-        'routine_cognitive': 0.7,       # Highly automatable
-        'nonroutine_manual': 0.3,       # Less automatable
-        'nonroutine_cognitive': 0.2     # Least automatable
+        'routine_manual': 0.95,         # Near-total automation potential
+        'routine_cognitive': 0.90,      # Near-total automation (AI excels here)
+        'nonroutine_manual': 0.60,      # Moderate automation (robotics improving)
+        'nonroutine_cognitive': 0.40    # Lower but still significant (creative AI)
     },
     'augmentation_potential': {
         'routine_manual': 0.1,          # Low augmentation potential
