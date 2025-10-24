@@ -84,7 +84,8 @@ class Firm(Agent):
     def _calculate_initial_wage(self) -> float:
         """Calculate initial wage offer."""
         # Base wage on capital stock (richer firms pay more)
-        return 500 + np.log(self.capital) * 50
+        # Reduced to ensure firms can be profitable
+        return 200 + np.log(self.capital) * 20
 
     def step(self):
         """Execute one step of firm behavior."""
@@ -188,13 +189,18 @@ class Firm(Agent):
         adoption_cost = ai_config.get('adoption_cost', 50000)
 
         if np.random.random() < adoption_probability:
-            # Can afford adoption?
-            if self.profits > adoption_cost * 0.5:
+            # Can afford adoption? (very lenient for extreme scenarios)
+            can_afford = (self.capital > adoption_cost * 2) or (self.profits > adoption_cost * 0.1)
+
+            if can_afford:
                 # Simple NPV calculation
                 expected_cost_savings = self.wage_bill * ai_config.get('operating_cost_reduction', 0.1)
                 expected_productivity_gain = self.revenue * 0.1
 
-                if (expected_cost_savings + expected_productivity_gain) > adoption_cost * 0.2:
+                # More lenient ROI threshold for extreme scenarios
+                roi_threshold = adoption_cost * 0.05 if diffusion_speed > 0.1 else adoption_cost * 0.2
+
+                if (expected_cost_savings + expected_productivity_gain) > roi_threshold:
                     self._adopt_ai(adoption_cost)
 
     def _adopt_ai(self, cost: float):
@@ -234,6 +240,10 @@ class Firm(Agent):
             return self.model.ai_config.get('low_adoption', {})
         elif scenario_name == 'high_adoption':
             return self.model.ai_config.get('high_adoption', {})
+        elif scenario_name == 'extreme_displacement':
+            return self.model.ai_config.get('extreme_displacement', {})
+        elif scenario_name == 'technological_singularity':
+            return self.model.ai_config.get('technological_singularity', {})
         else:
             return self.model.ai_config.get('baseline', {})
 
@@ -244,13 +254,21 @@ class Firm(Agent):
 
         current_workers = len(self.workers)
 
-        if current_workers < desired_workers:
-            # Post vacancies
+        # Check for demand shock (consumption collapse feedback)
+        demand_shock = getattr(self.model.goods_market, 'demand_shock', 0)
+
+        if current_workers < desired_workers and demand_shock > -0.1:
+            # Post vacancies (but not during severe demand collapse)
             vacancies_to_post = min(desired_workers - current_workers, self.max_vacancies)
             self.vacancies = vacancies_to_post
-        elif current_workers > desired_workers * 1.2:
-            # Lay off workers if significantly overstaffed
+        elif current_workers > desired_workers * 1.2 or demand_shock < -0.15:
+            # Lay off workers if overstaffed OR demand is collapsing
             num_to_fire = int((current_workers - desired_workers) * 0.3)
+
+            # During severe demand collapse, fire more aggressively
+            if demand_shock < -0.2:
+                num_to_fire = int(current_workers * 0.2)
+
             self._fire_excess_workers(num_to_fire)
 
     def _calculate_optimal_workforce(self) -> int:

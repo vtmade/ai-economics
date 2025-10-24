@@ -38,11 +38,13 @@ class GoodsMarket:
         self.total_supply = 0
         self.total_demand = 0
         self.total_sales = 0
+        self.demand_shock = 0  # Track demand collapse
 
         # History
         self.price_history = []
         self.supply_history = []
         self.demand_history = []
+        self.demand_shock_history = []
 
     def clear_market(self):
         """
@@ -71,10 +73,18 @@ class GoodsMarket:
         # Calculate sales (min of supply and demand)
         self.total_sales = min(self.total_supply, self.total_demand)
 
+        # Calculate demand shock (for feedback loops)
+        if len(self.demand_history) > 0:
+            previous_demand = self.demand_history[-1] if self.demand_history[-1] > 0 else 1
+            self.demand_shock = (self.total_demand - previous_demand) / previous_demand
+        else:
+            self.demand_shock = 0
+
         # Record history
         self.price_history.append(self.price)
         self.supply_history.append(self.total_supply)
         self.demand_history.append(self.total_demand)
+        self.demand_shock_history.append(self.demand_shock)
 
     def _calculate_total_demand(self) -> float:
         """

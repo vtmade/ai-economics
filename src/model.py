@@ -124,12 +124,17 @@ class LaborMarketModel(Model):
                 'AI Adoption Rate': self._calculate_ai_adoption_rate,
                 'Gini Coefficient': self._calculate_gini,
                 'Labor Share': self._calculate_labor_share,
+                'Capital Share': lambda m: 1 - m._calculate_labor_share() if m._calculate_labor_share() > 0 else 0,
                 'Average Productivity': self._calculate_avg_productivity,
                 'Total Employment': self._count_employed,
                 'Average Firm Profit': self._calculate_avg_profit,
                 'Low Skill Employment Rate': lambda m: self._skill_employment_rate('low'),
                 'Medium Skill Employment Rate': lambda m: self._skill_employment_rate('medium'),
-                'High Skill Employment Rate': lambda m: self._skill_employment_rate('high')
+                'High Skill Employment Rate': lambda m: self._skill_employment_rate('high'),
+                'Total Consumption': self._calculate_total_consumption,
+                'Wealth Gini': self._calculate_wealth_gini,
+                'Top 10% Income Share': self._calculate_top_income_share,
+                'Median Worker Savings': self._calculate_median_savings
             }
         )
 
@@ -153,6 +158,9 @@ class LaborMarketModel(Model):
             self.government_config['retraining']['enabled'] = True
             # Use low adoption AI parameters
             self.scenario_ai_config = 'low_adoption'
+        elif scenario_name in ['extreme_displacement', 'technological_singularity']:
+            # Extreme scenarios use their own config
+            self.scenario_ai_config = scenario_name
         elif scenario_name == 'custom':
             # Custom scenarios use provided parameters
             pass
@@ -271,10 +279,12 @@ class LaborMarketModel(Model):
         total_revenue = sum(f.revenue for f in firms)
         total_wages = sum(f.wage_bill for f in firms)
 
-        if total_revenue == 0:
+        if total_revenue == 0 or total_revenue < 0:
             return 0
 
-        return total_wages / total_revenue
+        labor_share = total_wages / total_revenue
+        # Cap at reasonable values
+        return min(max(labor_share, 0), 1)
 
     def _calculate_avg_productivity(self):
         """Calculate average worker productivity."""
@@ -305,6 +315,59 @@ class LaborMarketModel(Model):
             return 0
         employed = sum(1 for w in workers if w.employed)
         return employed / len(workers)
+
+    def _calculate_total_consumption(self):
+        """Calculate total consumption in the economy."""
+        workers = [agent for agent in self.schedule.agents if isinstance(agent, Worker)]
+        return sum(w.consumption for w in workers)
+
+    def _calculate_wealth_gini(self):
+        """Calculate Gini coefficient based on wealth (savings)."""
+        workers = [agent for agent in self.schedule.agents if isinstance(agent, Worker)]
+        if len(workers) == 0:
+            return 0
+
+        wealth = sorted([max(w.savings, 0) for w in workers])
+        n = len(wealth)
+
+        if sum(wealth) == 0:
+            return 0
+
+        numerator = sum((i + 1) * w for i, w in enumerate(wealth))
+        denominator = n * sum(wealth)
+
+        return (2 * numerator) / denominator - (n + 1) / n
+
+    def _calculate_top_income_share(self):
+        """Calculate income share of top 10% earners."""
+        workers = [agent for agent in self.schedule.agents if isinstance(agent, Worker)]
+        if len(workers) == 0:
+            return 0
+
+        incomes = sorted([w.income for w in workers], reverse=True)
+        total_income = sum(incomes)
+
+        if total_income == 0:
+            return 0
+
+        top_10_count = max(1, int(len(workers) * 0.1))
+        top_10_income = sum(incomes[:top_10_count])
+
+        return top_10_income / total_income
+
+    def _calculate_median_savings(self):
+        """Calculate median worker savings."""
+        workers = [agent for agent in self.schedule.agents if isinstance(agent, Worker)]
+        if len(workers) == 0:
+            return 0
+
+        savings = sorted([w.savings for w in workers])
+        n = len(savings)
+
+        if n % 2 == 0:
+            return (savings[n//2 - 1] + savings[n//2]) / 2
+        else:
+            return savings[n//2]
 
     def get_results(self):
         """

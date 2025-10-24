@@ -1,0 +1,5 @@
+Scenario,Unemployment,Avg Wage,GDP,Gini,Labor Share,AI Adoption,Top 10% Share,Consumption
+Baseline,83.3%,$383,$5353,0.842,100.0%,0.0%,63.4%,$7181
+High Adoption,83.3%,$413,$5630,0.848,100.0%,0.0%,65.7%,$7738
+Extreme Displacement,83.3%,$393,$5452,0.846,100.0%,0.0%,64.4%,$7374
+Technological Singularity,83.3%,$416,$9910,0.847,43.1%,72.0%,65.0%,$7808

@@ -37,6 +37,8 @@ class ScenarioRunner:
             'low_adoption': self._get_low_adoption_config,
             'high_adoption': self._get_high_adoption_config,
             'retraining': self._get_retraining_config,
+            'extreme_displacement': self._get_extreme_displacement_config,
+            'technological_singularity': self._get_singularity_config,
             'custom': self._get_custom_config
         }
 
@@ -138,6 +140,28 @@ class ScenarioRunner:
             'adoption_rate': 0.3,
             'diffusion_speed': 0.02,
             'retraining_enabled': True
+        }
+
+    def _get_extreme_displacement_config(self) -> Dict:
+        """Extreme AI displacement scenario - mass automation."""
+        return {
+            'scenario_description': 'Extreme AI displacement: 95% adoption, 85% automation intensity',
+            'ai_adoption': True,
+            'adoption_rate': 0.95,
+            'diffusion_speed': 0.15,
+            'automation_intensity': 0.85,
+            'augmentation_intensity': 0.6
+        }
+
+    def _get_singularity_config(self) -> Dict:
+        """Technological singularity scenario - near-total automation."""
+        return {
+            'scenario_description': 'Technological Singularity: 98% adoption, 95% automation, income concentration',
+            'ai_adoption': True,
+            'adoption_rate': 0.98,
+            'diffusion_speed': 0.20,
+            'automation_intensity': 0.95,
+            'augmentation_intensity': 0.8
         }
 
     def _get_custom_config(self) -> Dict:
