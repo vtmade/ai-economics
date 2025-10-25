@@ -1,7 +1,17 @@
 """
-Scenario Runner
+Scenario Runner - Research-Based Scenarios
 
-Runs individual scenarios and manages simulation execution.
+Runs individual scenarios based on 2023-2025 research findings:
+- McKinsey Global Institute (2023)
+- Anthropic (2024)
+- RAND Corporation (2024-2025)
+- Tony Blair Institute (2024)
+- Epoch AI (2024-2025)
+
+See docs/RESEARCH_SYNTHESIS.md and docs/RESEARCH_BASED_SCENARIOS.md for details.
+
+Author: Vinay Thakur
+Date: October 25, 2025
 """
 
 import numpy as np
@@ -32,13 +42,13 @@ class ScenarioRunner:
         self.random_seed = random_seed or config.RANDOM_SEED
         np.random.seed(self.random_seed)
 
+        # Research-based scenarios
         self.scenarios = {
-            'baseline': self._get_baseline_config,
-            'low_adoption': self._get_low_adoption_config,
-            'high_adoption': self._get_high_adoption_config,
-            'retraining': self._get_retraining_config,
-            'extreme_displacement': self._get_extreme_displacement_config,
-            'technological_singularity': self._get_singularity_config,
+            'conservative_gradual': self._get_conservative_gradual_config,
+            'mckinsey_baseline': self._get_mckinsey_baseline_config,
+            'tbi_aggressive': self._get_tbi_aggressive_config,
+            'anthropic_policy': self._get_anthropic_policy_config,
+            'rand_empirical': self._get_rand_empirical_config,
             'custom': self._get_custom_config
         }
 
@@ -107,61 +117,83 @@ class ScenarioRunner:
             'config': scenario_config
         }
 
-    def _get_baseline_config(self) -> Dict:
-        """Baseline scenario: No AI adoption."""
+    def _get_conservative_gradual_config(self) -> Dict:
+        """
+        Scenario 1: Conservative Gradual (Epoch AI 20-Year Timeline)
+
+        Based on Epoch AI (2024-2025) conservative compute scaling assumptions.
+        - Full automation timeline: 20+ years (median estimate)
+        - 34% of job tasks remotable
+        - Economy doubles within 20 years (conservative)
+        """
         return {
-            'scenario_description': 'Baseline scenario with no AI adoption (control)',
-            'ai_adoption': False
+            'scenario_description': 'Conservative gradual adoption - Epoch AI 20-year timeline',
+            'ai_adoption': True,
+            **config.AI_CONFIG['conservative_gradual']
         }
 
-    def _get_low_adoption_config(self) -> Dict:
-        """Low AI adoption scenario."""
+    def _get_mckinsey_baseline_config(self) -> Dict:
+        """
+        Scenario 2: McKinsey Baseline (Moderate 2030 Effects)
+
+        Based on McKinsey Global Institute (June 2023).
+        - 60-70% work time automatable
+        - $2.6-4.4T annual economic impact
+        - 0.5-0.9pp productivity growth through 2030
+        - 34pp increase in expertise automation
+        """
         return {
-            'scenario_description': 'Conservative AI diffusion with low adoption rate',
+            'scenario_description': 'McKinsey baseline - Moderate 2030 effects',
             'ai_adoption': True,
-            'adoption_rate': 0.3,
-            'diffusion_speed': 0.02
+            **config.AI_CONFIG['mckinsey_baseline']
         }
 
-    def _get_high_adoption_config(self) -> Dict:
-        """High AI adoption scenario."""
+    def _get_tbi_aggressive_config(self) -> Dict:
+        """
+        Scenario 3: TBI Aggressive Displacement (Rapid 2025-2030)
+
+        Based on Tony Blair Institute (November 2024).
+        - +180K unemployment by 2030 (UK)
+        - Peak displacement: 60K-275K jobs/year
+        - +6% GDP by 2035
+        - 23% workforce time savings
+        """
         return {
-            'scenario_description': 'Rapid AI diffusion with high adoption rate',
+            'scenario_description': 'TBI aggressive - Rapid displacement 2025-2030',
             'ai_adoption': True,
-            'adoption_rate': 0.8,
-            'diffusion_speed': 0.08
+            **config.AI_CONFIG['tbi_aggressive']
         }
 
-    def _get_retraining_config(self) -> Dict:
-        """AI adoption with government retraining programs."""
+    def _get_anthropic_policy_config(self) -> Dict:
+        """
+        Scenario 4: Anthropic Comprehensive Policy Response
+
+        Based on Anthropic (2024) 9-category graduated policy framework.
+        - $10K/year per trainee workforce training grants
+        - ~$700M annually for Automation Adjustment Assistance
+        - 3-stage response: workforce dev → fiscal support → wealth redistribution
+        - Users increasingly delegate full tasks (faster displacement)
+        """
         return {
-            'scenario_description': 'Low AI adoption with active government retraining programs',
+            'scenario_description': 'Anthropic comprehensive policy - Graduated response',
             'ai_adoption': True,
-            'adoption_rate': 0.3,
-            'diffusion_speed': 0.02,
-            'retraining_enabled': True
+            **config.AI_CONFIG['anthropic_policy']
         }
 
-    def _get_extreme_displacement_config(self) -> Dict:
-        """Extreme AI displacement scenario - mass automation."""
-        return {
-            'scenario_description': 'Extreme AI displacement: 95% adoption, 85% automation intensity',
-            'ai_adoption': True,
-            'adoption_rate': 0.95,
-            'diffusion_speed': 0.15,
-            'automation_intensity': 0.85,
-            'augmentation_intensity': 0.6
-        }
+    def _get_rand_empirical_config(self) -> Dict:
+        """
+        Scenario 5: RAND Empirical Evidence (Data-Calibrated)
 
-    def _get_singularity_config(self) -> Dict:
-        """Technological singularity scenario - near-total automation."""
+        Based on RAND Corporation (2024-2025) empirical findings.
+        - +$7K per capita GDP by 2035
+        - 0.57 correlation between AI adoption and unemployment
+        - 22-25 year-olds most affected
+        - Software dev, customer service, clerical primary occupations
+        """
         return {
-            'scenario_description': 'Technological Singularity: 98% adoption, 95% automation, income concentration',
+            'scenario_description': 'RAND empirical - Data-calibrated projection',
             'ai_adoption': True,
-            'adoption_rate': 0.98,
-            'diffusion_speed': 0.20,
-            'automation_intensity': 0.95,
-            'augmentation_intensity': 0.8
+            **config.AI_CONFIG['rand_empirical']
         }
 
     def _get_custom_config(self) -> Dict:
@@ -202,10 +234,11 @@ def main():
     """Run a single scenario from command line."""
     import argparse
 
-    parser = argparse.ArgumentParser(description='Run AI Labor Market Simulation')
-    parser.add_argument('scenario', choices=['baseline', 'low_adoption', 'high_adoption',
-                                            'retraining', 'custom'],
-                       help='Scenario to run')
+    parser = argparse.ArgumentParser(description='Run AI Labor Market Simulation - Research-Based Scenarios')
+    parser.add_argument('scenario',
+                       choices=['conservative_gradual', 'mckinsey_baseline', 'tbi_aggressive',
+                               'anthropic_policy', 'rand_empirical', 'custom'],
+                       help='Research-based scenario to run')
     parser.add_argument('--steps', type=int, default=200,
                        help='Number of simulation steps')
     parser.add_argument('--workers', type=int, default=100,

@@ -1,7 +1,10 @@
 """
-Scenario Comparison
+Scenario Comparison - Research-Based Scenarios
 
-Runs multiple scenarios and compares results.
+Runs and compares research-based scenarios from 2023-2025 AI labor market studies.
+
+Author: Vinay Thakur
+Date: October 25, 2025
 """
 
 import numpy as np
@@ -28,7 +31,14 @@ class ScenarioComparison:
             random_seed: Random seed for reproducibility
         """
         self.runner = ScenarioRunner(random_seed)
-        self.scenarios_to_run = ['baseline', 'low_adoption', 'high_adoption', 'retraining']
+        # Research-based scenarios for comparison
+        self.scenarios_to_run = [
+            'conservative_gradual',    # Epoch AI: 20-year timeline
+            'mckinsey_baseline',        # McKinsey: Moderate 2030 effects
+            'tbi_aggressive',           # TBI: Rapid displacement
+            'anthropic_policy'          # Anthropic: Comprehensive policy response
+            # 'rand_empirical'          # Optional: RAND data-calibrated
+        ]
         self.results = {}
 
     def run_all_scenarios(self, steps: int = 200, num_workers: int = 100,
@@ -95,12 +105,12 @@ class ScenarioComparison:
 
         return pd.DataFrame(comparison_data)
 
-    def calculate_impacts(self, baseline_name: str = 'baseline') -> pd.DataFrame:
+    def calculate_impacts(self, baseline_name: str = 'conservative_gradual') -> pd.DataFrame:
         """
         Calculate impacts relative to baseline scenario.
 
         Args:
-            baseline_name: Name of baseline scenario
+            baseline_name: Name of baseline scenario (default: conservative_gradual - Epoch AI)
 
         Returns:
             DataFrame with percentage changes relative to baseline
